@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake</title>
+  </head>
+  <body>
+    <script>
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const w = 800;
+      const h = 800;
+      canvas.width = w;
+      canvas.height = h;
+
+      function randInt(min, max) {
+        return Math.floor(Math.random() * (max + 1 - min)) + min;
+      }
+
+      const STEP = 40;
+
+      const cubePlacements = new Array(h / STEP); // 20
+      // 800 is exlcuded because the coordinate (800, 800) will cause square to appear outside the grid due to how the ctx rect method works, width and height is applied on the after the coordinates
+
+      // O(2n)
+      for (let j = 0; j <= cubePlacements.length - 1; j++) {
+        cubePlacements[j] = 40 * j;
+      }
+      console.log(cubePlacements);
+
+      function randPlacement() {
+        return cubePlacements[Math.floor(Math.random() * cubePlacements.length)];
+      }
+      const [CUBE_W, CUBE_H] = [40, 40];
+      function generateSquare() {
+        const rand1 = randPlacement();
+        const rand2 = randPlacement();
+
+        // scrap original idea using moveto and lineto. Proportions will distort since there is no linear relationship between where squares are drawn or placed
+        /* ctx.moveTo(80, 40);
+        ctx.lineTo(120, 40);
+        ctx.lineTo(120, 0);
+        ctx.lineTo(80, 0);
+        ctx.fill(); */
+
+        //Use rects instead
+        console.log(rand1);
+        console.log(rand2);
+        ctx.beginPath();
+        ctx.rect(rand1, rand2, CUBE_W, CUBE_H);
+        ctx.fill();
+      }
+
+      function generatePlayer() {
+        ctx.beginPath();
+        ctx.rect(cubePlacements[10], cubePlacements[10], CUBE_W, CUBE_H);
+        ctx.fill();
+      }
+
+      //for loop body is executed 21^2 times, (800 / 40)
+      for (let x = 0; x <= w; x += STEP) {
+        for (let y = 0; y <= h; y += STEP) {
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h);
+          ctx.stroke();
+          ctx.moveTo(0, y);
+          ctx.lineTo(w, y);
+          ctx.stroke();
+          //Calling generateSquare function 21^2 times will make the canvas look like some barcode thing
+        }
+      }
+      generateSquare();
+      renderSnake();
+
+      function renderSnake() {
+        //Player logic goes here
+        return generatePlayer();
+      }
+
+      document.body.appendChild(canvas);
+    </script>
+  </body>
+</html>
